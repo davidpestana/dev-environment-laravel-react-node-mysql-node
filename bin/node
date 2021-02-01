@@ -15,4 +15,4 @@ export GROUP_ID=${UID}
 echo -e "\e[32m[$(date +"%Y-%m-%d %T")] \e[33m Creating temporal container ...\e[39m"
 
 
-${DOCKER} run --user="$UID" --rm -it -v ${PROJECT_PATH}/source:/var/www/html \php-apache-custom bash -c "bash"
+${DOCKER} run --user="$UID" --rm -it -v ${PROJECT_PATH}/source:/app \node-custom bash -c "bash"
