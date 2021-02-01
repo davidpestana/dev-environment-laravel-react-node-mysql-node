@@ -1,0 +1,24 @@
+#!/bin/bash
+
+####################
+###   Binaries   ###
+####################
+DOCKER_COMPOSE=$(which docker-compose)
+####################
+
+PROJECT_PATH="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && cd .. && pwd )"
+
+echo "[$(date +"%Y-%m-%d %T")] Stopping lingering containers..."
+
+while read line; do export "$line";
+done < <(cat ${PROJECT_PATH}/.env | grep -v "#" | grep -v "^$")
+export USER_ID=${UID}
+export GROUP_ID=${UID}
+
+echo -e "\e[32m[$(date +"%Y-%m-%d %T")] Building custom images\e[39m"
+
+${DOCKER_COMPOSE} \
+    -f ${PROJECT_PATH}/deploy/develop/docker-compose.yaml \
+    build    
+
+echo -e "\e[32m[$(date +"%Y-%m-%d %T")] Success\e[39m"

@@ -1,0 +1,56 @@
+version: '2'
+
+services:      
+
+    backend-php:
+        container_name: backend-php
+        image: php-apache-custom
+        build:
+            context: ../../builds/php-apache-custom
+        restart: always
+        ports:
+            - 8080:80
+        environment: 
+            docker: 'true'
+        volumes:
+            - ../../source/backend-php:/var/www/html
+
+    backend-node:
+        container_name: backend-node
+        image: node-custom
+        build:
+            context: ../../builds/node-custom
+        restart: always
+        ports:
+            - 8080:80
+        environment: 
+            docker: 'true'
+        volumes:
+            - ../../source/backend-node:/var/www/html
+
+
+    mysql:
+        container_name: mysql
+        working_dir: /dumps
+        image: mysql:5.7
+        restart: always
+        environment:
+            MYSQL_DATABASE: 'databasename'
+            MYSQL_USER: 'user'
+            MYSQL_PASSWORD: 'password'
+            MYSQL_ROOT_PASSWORD: 'password'
+        expose:
+        - '3306'
+        volumes:
+        - ../../data/mysql:/var/lib/mysql
+        - ../../dumps/mysql:/dumps
+
+    phpmyadmin:
+            container_name: phpmyadmin
+            image: phpmyadmin/phpmyadmin
+            ports:
+                - 8081:80
+            environment:
+                PMA_HOST: 'mysql'
+                PMA_USER: 'root'
+                PMA_PASSWORD: 'password'

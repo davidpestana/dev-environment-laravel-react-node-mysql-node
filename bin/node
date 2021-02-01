@@ -1,0 +1,18 @@
+#!/bin/bash
+
+####################
+###   Binaries   ###
+####################
+DOCKER_COMPOSE=$(which docker-compose)
+DOCKER=$(which docker)
+####################
+
+PROJECT_PATH="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && cd .. && pwd )"
+
+export USER_ID=${UID}
+export GROUP_ID=${UID}
+
+echo -e "\e[32m[$(date +"%Y-%m-%d %T")] \e[33m Creating temporal container ...\e[39m"
+
+
+${DOCKER} run --user="$UID" --rm -it -v ${PROJECT_PATH}/source:/var/www/html \php-apache-custom bash -c "bash"

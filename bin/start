@@ -1,0 +1,46 @@
+#!/bin/bash
+
+####################
+###   Binaries   ###
+####################
+DOCKER_COMPOSE=$(which docker-compose)
+####################
+
+PROJECT_PATH="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && cd .. && pwd )"
+
+while read line; do export "$line";
+done < <(cat ${PROJECT_PATH}/.env | grep -v "#" | grep -v "^$")
+export USER_ID=${UID}
+export GROUP_ID=${UID}
+
+# echo "[$(date +"%Y-%m-%d %T")] Fixing folders..."
+ 
+# mkdir -p ${PROJECT_PATH}/source/prestashop/var/cache && chmod 777 ${PROJECT_PATH}/source/prestashop/var/cache
+# mkdir -p ${PROJECT_PATH}/source/prestashop/var/logs && chmod 777 ${PROJECT_PATH}/source/prestashop/var/logs
+# mkdir -p ${PROJECT_PATH}/source/prestashop/themes/classic/assets/cache && chmod 777 ${PROJECT_PATH}/source/prestashop/themes/classic/assets/cache
+echo -e "\e[32m[$(date +"%Y-%m-%d %T")] \e[33m Stopping lingering containers...\e[39m"
+
+${DOCKER_COMPOSE} \
+    -f ${PROJECT_PATH}/deploy/develop/docker-compose.yaml \
+    down --remove-orphans    
+
+echo -e "\e[32m[$(date +"%Y-%m-%d %T")] \e[33m Starting the containers in background ...\e[39m"
+
+${DOCKER_COMPOSE} \
+    -f ${PROJECT_PATH}/deploy/develop/docker-compose.yaml \
+    up -d    
+
+echo -e "\e[32m[$(date +"%Y-%m-%d %T")] \e[33m Showing logs ...\e[39m"
+
+${DOCKER_COMPOSE} \
+    -f ${PROJECT_PATH}/deploy/develop/docker-compose.yaml \
+    logs -f --tail 40    
+
+echo -e "\e[32m[$(date +"%Y-%m-%d %T")] \e[33m Stop logs \e[37m ( ./bin/logs to show again without restart containers ). \e[39m"
+
+
+
+
+
+
+# ${DOCKER_COMPOSE} -f ${PROJECT_PATH}/docker-compose.api.yml logs -f
