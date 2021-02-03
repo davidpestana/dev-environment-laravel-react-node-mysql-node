@@ -8,10 +8,10 @@ DOCKER_COMPOSE=$(which docker-compose)
 
 PROJECT_PATH="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && cd .. && pwd )"
 
-while read line; do export "$line";
-done < <(cat ${PROJECT_PATH}/.env | grep -v "#" | grep -v "^$")
-export USER_ID=${UID}
-export GROUP_ID=${UID}
+# while read line; do export "$line";
+# done < <(cat ${PROJECT_PATH}/.env | grep -v "#" | grep -v "^$")
+# export USER_ID=${UID}
+# export GROUP_ID=${UID}
 
 # echo "[$(date +"%Y-%m-%d %T")] Fixing folders..."
  

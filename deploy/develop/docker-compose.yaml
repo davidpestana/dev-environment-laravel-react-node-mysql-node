@@ -4,53 +4,82 @@ services:
 
     # backend-php:
     #     container_name: backend-php
-    #     image: php-apache-custom
+    #     image: php-custom
     #     build:
-    #         context: ../../builds/php-apache-custom
+    #         context: ../../builds/php-custom
     #     restart: always
+    #     command: php artisan serve --host 0.0.0.0
     #     ports:
-    #         - 8080:80
+    #         - 8000:8000
     #     environment: 
     #         docker: 'true'
     #     volumes:
-    #         - ../../source/backend-php:/var/www/html
+    #         - ../../source/lucia-bermejo/back/:/var/www/html
 
     backend-node:
         container_name: backend-node
         image: node-custom
         build:
             context: ../../builds/node-custom
+        command: npm run dev
         restart: always
         ports:
-            - 8080:80
+            - 3000:3001
         environment: 
             docker: 'true'
+            # MongoURI: mongodb://mongo:27017/neoSchool
+            CLEARDB_DATABASE_URL: mysql://root:password@mysql:3306/databasename
+            DB_USERNAME: root
+            DB_PASSWORD: password
+            DB_DATABASE: databasename
+            DB_HOST: mysql
+            DB_DIALECT: mysql
         volumes:
-            - ../../source/backend-node:/var/www/html
+            - ../../source/adriano/back:/app
 
 
-    # mysql:
-    #     container_name: mysql
-    #     working_dir: /dumps
-    #     image: mysql:5.7
-    #     restart: always
-    #     environment:
-    #         MYSQL_DATABASE: 'databasename'
-    #         MYSQL_USER: 'user'
-    #         MYSQL_PASSWORD: 'password'
-    #         MYSQL_ROOT_PASSWORD: 'password'
-    #     expose:
-    #     - '3306'
-    #     volumes:
-    #     - ../../data/mysql:/var/lib/mysql
-    #     - ../../dumps/mysql:/dumps
+    frontend-node:
+        container_name: frontend-node
+        image: node-custom
+        build:
+            context: ../../builds/node-custom
+        command: npm start
+        restart: always
+        ports:
+            - 3001:3000
+        environment: 
+            docker: 'true'
+            BACKEND: ''
+        volumes:
+            - ../../source/adriano/front:/app
 
-    # phpmyadmin:
-    #         container_name: phpmyadmin
-    #         image: phpmyadmin/phpmyadmin
-    #         ports:
-    #             - 8081:80
-    #         environment:
-    #             PMA_HOST: 'mysql'
-    #             PMA_USER: 'root'
-    #             PMA_PASSWORD: 'password'
+    mongo:
+        container_name: mongo
+        image: mongo
+        restart: always
+
+    mysql:
+        container_name: mysql
+        working_dir: /dumps
+        image: mysql
+        restart: always
+        environment:
+            MYSQL_DATABASE: 'databasename'
+            MYSQL_USER: 'user'
+            MYSQL_PASSWORD: 'password'
+            MYSQL_ROOT_PASSWORD: 'password'
+        expose:
+        - '3306'
+        volumes:
+        - ../../data/mysql:/var/lib/mysql
+        - ../../dumps/mysql:/dumps
+
+    phpmyadmin:
+            container_name: phpmyadmin
+            image: phpmyadmin/phpmyadmin
+            ports:
+                - 8081:80
+            environment:
+                PMA_HOST: 'mysql'
+                PMA_USER: 'root'
+                PMA_PASSWORD: 'password'

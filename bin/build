@@ -4,6 +4,7 @@
 ###   Binaries   ###
 ####################
 DOCKER_COMPOSE=$(which docker-compose)
+DOCKER=$(which docker)
 ####################
 
 PROJECT_PATH="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && cd .. && pwd )"
@@ -16,9 +17,13 @@ export USER_ID=${UID}
 export GROUP_ID=${UID}
 
 echo -e "\e[32m[$(date +"%Y-%m-%d %T")] Building custom images\e[39m"
+cd ${PROJECT_PATH}/builds/php-custom && ${DOCKER} build -t php-custom .
 
-${DOCKER_COMPOSE} \
-    -f ${PROJECT_PATH}/deploy/develop/docker-compose.yaml \
-    build    
+
+cd ${PROJECT_PATH}/builds/node-custom && ${DOCKER} build -t node-custom .
+
+# ${DOCKER_COMPOSE} \
+#     -f ${PROJECT_PATH}/deploy/develop/docker-compose.yaml \
+#     build    
 
 echo -e "\e[32m[$(date +"%Y-%m-%d %T")] Success\e[39m"
